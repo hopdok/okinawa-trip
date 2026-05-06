@@ -172,6 +172,100 @@
   .tip-item .te { font-size:1.2rem; display:block; margin-bottom:6px; }
   .tip-item strong { display:block; color:var(--ocean); font-size:.78rem; margin-bottom:2px; }
 
+  /* ── 맛집 섹션 ── */
+  .food-section {
+    background:white; border-radius:18px; padding:28px;
+    box-shadow:0 2px 16px rgba(0,0,0,.06); margin-top:32px;
+    animation:fadeUp .5s .6s ease both;
+  }
+  .food-section h3 { font-family:'Noto Serif KR',serif; font-size:1rem; font-weight:600; margin-bottom:6px; }
+  .food-section .food-sub { font-size:.78rem; color:var(--text-muted); margin-bottom:20px; }
+
+  .food-day-label {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:.72rem; font-weight:600; letter-spacing:.06em;
+    padding:3px 12px; border-radius:20px; margin-bottom:12px; margin-right:6px;
+  }
+  .food-day-label.d1 { background:#e0f0f7; color:var(--ocean); }
+  .food-day-label.d2 { background:#fde8e2; color:var(--coral); }
+  .food-day-label.d3 { background:#dff0e5; color:var(--leaf); }
+  .food-day-label.d4 { background:#f5ead8; color:var(--amber); }
+
+  .food-grid {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px; margin-bottom:18px;
+  }
+  @media(max-width:800px){ .food-grid { grid-template-columns:repeat(2, 1fr); } }
+
+  .food-cat-title {
+    font-family:'Noto Serif KR',serif; font-size:.95rem; font-weight:600;
+    color:var(--ocean); margin:18px 0 10px;
+    padding-bottom:8px; border-bottom:2px solid var(--ocean-light);
+    display:none;
+  }
+  .food-cat-title.visible { display:block; }
+
+  .food-card {
+    background:var(--sky-pale); border-radius:14px; padding:16px;
+    font-size:.8rem; line-height:1.55; position:relative;
+    border:1px solid rgba(168,216,234,.3);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .food-card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,.08); }
+
+  .food-card .fc-emoji { font-size:1.4rem; display:block; margin-bottom:8px; }
+  .food-card .fc-name { font-family:'Noto Serif KR',serif; font-size:.95rem; font-weight:600; color:var(--text); margin-bottom:4px; }
+  .food-card .fc-type { font-size:.7rem; color:var(--text-muted); margin-bottom:8px; }
+  .food-card .fc-info { display:flex; flex-direction:column; gap:4px; }
+  .food-card .fc-row { display:flex; gap:6px; align-items:flex-start; font-size:.75rem; color:var(--text); }
+  .food-card .fc-icon { flex-shrink:0; width:16px; font-size:.75rem; }
+  .food-card .fc-row span { color:var(--text-muted); }
+  .food-card .fc-tags { display:flex; gap:5px; flex-wrap:wrap; margin-top:10px; }
+  .food-card .fc-tag {
+    font-size:.64rem; padding:2px 8px; border-radius:10px; font-weight:500;
+    background:rgba(26,107,138,.12); color:var(--ocean);
+  }
+  .food-card .fc-tag.warn { background:#fef3c7; color:#92400e; }
+  .food-card .fc-tag.coral { background:#fde8e2; color:#b85540; }
+  .food-card .fc-tag.leaf { background:#dff0e5; color:var(--leaf); }
+
+  .food-divider { border:none; border-top:1px solid var(--sand-dark); margin:20px 0; }
+
+  .food-meal-group { margin-bottom:14px; }
+  .food-meal-group:last-child { margin-bottom:0; }
+  .meal-label {
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:.73rem; font-weight:600; padding:3px 12px;
+    border-radius:20px; margin-bottom:10px;
+  }
+  .ml-lunch  { background:#fff8e1; color:#b45309; border:1px solid #fcd34d; }
+  .ml-dinner { background:#e8eaf6; color:#3949ab; border:1px solid #9fa8da; }
+  .ml-cafe   { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
+  .food-day-block { margin-bottom:28px; }
+  .food-day-block:last-child { margin-bottom:0; }
+  .food-day-header {
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:12px; padding-bottom:10px;
+    border-bottom:1px solid var(--sand-dark);
+  }
+
+  .food-tabs {
+    display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;
+  }
+  .food-tab {
+    padding:7px 20px; border-radius:20px; border:none;
+    font-family:'Noto Sans KR',sans-serif; font-size:.8rem; font-weight:500;
+    cursor:pointer; background:#f5ede0; color:var(--text-muted);
+    transition:all .2s; -webkit-tap-highlight-color:transparent;
+  }
+  .food-tab.active { background:var(--ocean); color:white; }
+
+  @media(max-width:600px){
+    .food-grid { grid-template-columns:1fr 1fr; }
+    .food-card { padding:13px; }
+  }
+
   footer { text-align:center; padding:30px; font-size:.75rem; color:var(--text-muted); border-top:1px solid var(--sand-dark); }
   .dl-btn {
     display:inline-flex; align-items:center; gap:8px;
@@ -480,8 +574,288 @@
     </div>
   </section>
 
-</main>
 
+  <!-- ── 맛집 추천 ── -->
+  <section class="food-section">
+    <h3>🍽️ 맛집 · 카페 추천</h3>
+    <p class="food-sub">3살 딸아이와 가기 좋은 식당 · 어린이 메뉴 · 주차 정보 포함</p>
+
+    <div class="food-tabs">
+      <button class="food-tab active" data-cat="all">🍽️ 전체</button>
+      <button class="food-tab" data-cat="lunch">🌞 점심</button>
+      <button class="food-tab" data-cat="dinner">🌙 저녁</button>
+      <button class="food-tab" data-cat="cafe">☕ 카페</button>
+    </div>
+
+    <!-- ══ DAY 1 ══ -->
+    <div class="food-day-block">
+      <div class="food-day-header"><span class="food-day-label d1">Day 1 · 나하</span></div>
+
+      <div class="food-meal-group" data-meal="lunch">
+        <span class="meal-label ml-lunch">🌞 점심</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">🥩</span>
+            <div class="fc-name">규카츠 모토무라</div>
+            <div class="fc-type">牛かつもと村 · 규카츠</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>11:00 ~ 22:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>1,600 ~ 2,800엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>국제거리 도보 5분</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>국제거리 주변 유료 주차장</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">구글 4.9 ⭐</span><span class="fc-tag leaf">밥 무료 리필</span><span class="fc-tag">테이블 화로</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="food-meal-group" data-meal="cafe">
+        <span class="meal-label ml-cafe">☕ 카페</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">🌊</span>
+            <div class="fc-name">우미카지테라스 카페</div>
+            <div class="fc-type">テラスカフェ · 바다뷰 카페</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>10:00 ~ 20:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>600 ~ 1,200엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>세나가섬 우미카지테라스 내</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>전용 주차장 무료</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">비행기 이착륙 뷰</span><span class="fc-tag leaf">오션뷰 테라스</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DAY 2 ══ -->
+    <div class="food-day-block">
+      <div class="food-day-header"><span class="food-day-label d2">Day 2 · 북부 (추라우미·모토부)</span></div>
+
+      <div class="food-meal-group" data-meal="lunch">
+        <span class="meal-label ml-lunch">🌞 점심</span>
+        <div class="food-grid">
+
+          <div class="food-card">
+            <span class="fc-emoji">🍖</span>
+            <div class="fc-name">캡틴캥거루</div>
+            <div class="fc-type">キャプテンカンガルー · 수제버거</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>11:00 ~ 17:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>1,200 ~ 2,000엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>모토부 · 추라우미 근처</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>전용 주차장 있음</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">6년 연속 1위 버거</span><span class="fc-tag coral">육즙 · 치즈 줄줄</span>
+            </div>
+          </div>
+          <div class="food-card">
+            <span class="fc-emoji">🍕</span>
+            <div class="fc-name">카진호 피자</div>
+            <div class="fc-type">カジン・ホー · 오키나와 화덕 피자</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>11:00 ~ 17:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>1,500 ~ 2,500엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>모토부초 · 추라우미 인근</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>전용 주차장 있음</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag coral">오키나와 식재료 피자</span><span class="fc-tag">화덕 구이</span>
+              <span class="fc-tag leaf">아이 좋아하는 피자</span><span class="fc-tag warn">조기 마감 주의</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-meal-group" data-meal="dinner">
+        <span class="meal-label ml-dinner">🌙 저녁</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">🏨</span>
+            <div class="fc-name">오리온 모토부 리조트 레스토랑</div>
+            <div class="fc-type">리조트 내 식당 · 오키나와 창작 요리</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>18:00 ~ 21:30</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>3,000 ~ 5,000엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>리조트 내부</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>리조트 주차장 무료</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag leaf">이동 불필요</span><span class="fc-tag coral">아이 피로할 때 최적</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-meal-group" data-meal="cafe">
+        <span class="meal-label ml-cafe">☕ 카페</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">☕</span>
+            <div class="fc-name">스타벅스 오키나와 모토부쵸점</div>
+            <div class="fc-type">スターバックス · 오키나와 한정 메뉴</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>07:00 ~ 22:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>500 ~ 1,000엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>추라우미 수족관 인근 해변가</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>전용 주차장 있음</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">오키나와 한정 매장</span><span class="fc-tag leaf">바다 보이는 테라스</span>
+              <span class="fc-tag coral">한정 음료</span>
+            </div>
+          </div>
+          <div class="food-card">
+            <span class="fc-emoji">🥭</span>
+            <div class="fc-name">과일 카페 마츠다 상점</div>
+            <div class="fc-type">松田商店 · 열대과일 디저트</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>09:00 ~ 17:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>400 ~ 800엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>모토부쵸 세소섬 근처</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>전용 주차장 무료</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">망고·구아바 신선 디저트</span><span class="fc-tag coral">아이 과일 간식 최적</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DAY 3 ══ -->
+    <div class="food-day-block">
+      <div class="food-day-header"><span class="food-day-label d3">Day 3 · 중부 (차탄·아메리칸빌리지)</span></div>
+
+      <div class="food-meal-group" data-meal="lunch">
+        <span class="meal-label ml-lunch">🌞 점심</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">🍛</span>
+            <div class="fc-name">타코라이스 카페 기시모토</div>
+            <div class="fc-type">タコライスカフェ · 타코라이스</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>11:00 ~ 21:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>800 ~ 1,200엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>차탄 · 아메리칸빌리지 인근</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>주변 공용 주차장</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">오키나와 소울푸드</span><span class="fc-tag leaf">아이 먹기 좋음</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-meal-group" data-meal="dinner">
+        <span class="meal-label ml-dinner">🌙 저녁</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">🦞</span>
+            <div class="fc-name">차탄 스팀 씨푸드</div>
+            <div class="fc-type">チャタン スチーム シーフード · 해산물 무한리필</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>15:30 ~ 23:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>6,000 ~ 8,000엔 (2h)</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>차탄 해안가 · 아메리칸빌리지 인근</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>건물 전용 주차장 무료</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">오션뷰 석양 테라스</span><span class="fc-tag leaf">굴·새우·대게 무제한</span>
+              <span class="fc-tag warn">테라스석 사전 예약 필수</span>
+            </div>
+          </div>
+          <div class="food-card">
+            <span class="fc-emoji">🍔</span>
+            <div class="fc-name">아메리칸빌리지 맛집 거리</div>
+            <div class="fc-type">햄버거 · 멕시칸 · 일식 다양</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>점포마다 상이 (~22:00)</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>1,000 ~ 2,500엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>아메리칸빌리지 내</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>아메리칸빌리지 공용 주차장 무료</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">저녁 노을 뷰</span><span class="fc-tag coral">선택지 다양</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-meal-group" data-meal="cafe">
+        <span class="meal-label ml-cafe">☕ 카페</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">🍦</span>
+            <div class="fc-name">Blue Seal 아이스크림</div>
+            <div class="fc-type">ブルーシール · 오키나와 대표 아이스크림</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>10:00 ~ 22:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>400 ~ 700엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>아메리칸빌리지 내</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>아메리칸빌리지 공용 주차장 무료</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag coral">아이 최애 🍦</span><span class="fc-tag">오키나와 한정</span>
+              <span class="fc-tag leaf">베니이모(자색고구마) 추천</span>
+            </div>
+          </div>
+          <div class="food-card">
+            <span class="fc-emoji">🌅</span>
+            <div class="fc-name">차탄 선셋 카페</div>
+            <div class="fc-type">サンセットカフェ · 오션뷰 카페</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>10:00 ~ 21:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>600 ~ 1,500엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>차탄 해안 선셋비치 인근</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>해변 공용 주차장</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag">석양 뷰 포인트</span><span class="fc-tag leaf">아이와 테라스 산책</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DAY 4 ══ -->
+    <div class="food-day-block">
+      <div class="food-day-header"><span class="food-day-label d4">Day 4 · 나하 (공항 전)</span></div>
+
+      <div class="food-meal-group" data-meal="lunch">
+        <span class="meal-label ml-lunch">🌞 점심</span>
+        <div class="food-grid">
+          <div class="food-card">
+            <span class="fc-emoji">🍜</span>
+            <div class="fc-name">킨치치소바</div>
+            <div class="fc-type">きんちち沖縄そば · 오키나와 소바</div>
+            <div class="fc-info">
+              <div class="fc-row"><span class="fc-icon">⏰</span><span>11:00 ~ 20:00</span></div>
+              <div class="fc-row"><span class="fc-icon">💴</span><span>800 ~ 1,200엔</span></div>
+              <div class="fc-row"><span class="fc-icon">📍</span><span>국제거리 · 티갤러리아 인근</span></div>
+              <div class="fc-row"><span class="fc-icon">🅿️</span><span>국제거리 주변 유료 주차장</span></div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag leaf">3살 소바 OK</span><span class="fc-tag">가성비</span><span class="fc-tag">공항 전 추천</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;padding:12px 16px;background:#fef3c7;border-radius:10px;font-size:.78rem;color:#92400e;">
+      💡 <strong>팁</strong> · 일본 식당은 대부분 <strong>お子様ランチ(오코사마 런치)</strong> 아이 세트가 있어요. 자리 안내 시 유아 의자(ベビーチェア) 요청하면 제공해줘요!
+    </div>
+  </section>
+
+</main>
 <footer>
   <a class="dl-btn" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="오키나와_가족여행_일정표_v5.xlsx">
     📥 엑셀 일정표 다운로드
@@ -679,6 +1053,30 @@ window.addEventListener('load', function() {
     },{threshold:0.05});
     obs.observe(mapEl);
   }
+
+
+  // ── 맛집 탭 ──
+  function activateFoodTab(cat) {
+    document.querySelectorAll('.food-tab').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelector('.food-tab[data-cat="'+cat+'"]').classList.add('active');
+    document.querySelectorAll('.food-meal-group').forEach(function(g) {
+      if (cat === 'all' || g.dataset.meal === cat) {
+        g.style.display = 'block';
+      } else {
+        g.style.display = 'none';
+      }
+    });
+    // day-block 중 보이는 meal-group 없으면 숨김
+    document.querySelectorAll('.food-day-block').forEach(function(db) {
+      var visible = db.querySelectorAll('.food-meal-group:not([style*="none"])').length;
+      db.style.display = visible > 0 ? 'block' : 'none';
+    });
+  }
+  activateFoodTab('all');
+  document.querySelectorAll('.food-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() { activateFoodTab(btn.dataset.cat); });
+  });
+
 }); // window.onload
 </script>
 </body>
