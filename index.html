@@ -47,6 +47,68 @@
   .header-pills { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:24px; position:relative; animation:fadeDown .6s .3s ease both; }
   .pill { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:20px; padding:5px 14px; font-size:.78rem; color:rgba(255,255,255,.9); }
 
+  /* ── 날씨 위젯 ── */
+  .weather-wrap {
+    background:white; border-radius:18px; padding:20px 22px; margin-bottom:32px;
+    box-shadow:0 2px 16px rgba(0,0,0,.07); animation:fadeUp .5s ease both;
+  }
+  .weather-header {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:16px; flex-wrap:wrap; gap:6px;
+  }
+  .weather-header > span:first-child {
+    font-family:'Noto Serif KR',serif; font-size:1rem; font-weight:600; color:var(--text);
+  }
+  .weather-updated { font-size:.68rem; color:var(--text-muted); }
+  .weather-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+  }
+  .weather-day-card {
+    background:linear-gradient(160deg,var(--ocean) 0%,#0d4a63 100%);
+    border-radius:14px; padding:16px 12px; color:white; text-align:center;
+  }
+  .weather-day-card.skeleton {
+    background:var(--sand); min-height:140px; border-radius:14px;
+    animation:pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .wdc-day  { font-size:.7rem; font-weight:600; opacity:.9; letter-spacing:.04em; margin-bottom:2px; }
+  .wdc-minmax {
+    font-size:.7rem; opacity:.8; margin-bottom:10px;
+    background:rgba(255,255,255,.12); border-radius:8px; padding:4px 8px; display:inline-block;
+  }
+  .wdc-minmax b { font-weight:700; opacity:1; }
+  .wdc-date { font-size:.68rem; opacity:.6; margin-bottom:12px; }
+  /* 오전/오후 2단 구성 */
+  .wdc-ampm { display:grid; grid-template-columns:1fr 1fr; gap:1px; }
+  .wdc-ampm-divider {
+    grid-column:1/-1; height:1px;
+    background:rgba(255,255,255,.2); margin:4px 0;
+  }
+  .wdc-half { padding:4px 2px; }
+  .wdc-half-label {
+    font-size:.62rem; opacity:.65; margin-bottom:5px; letter-spacing:.04em;
+  }
+  .wdc-half-icon { font-size:1.4rem; margin-bottom:4px; }
+  .wdc-half-temp {
+    font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700;
+    margin-bottom:3px; line-height:1;
+  }
+  .wdc-half-desc { font-size:.63rem; opacity:.8; line-height:1.3; margin-bottom:6px; min-height:2.2em; }
+  .wdc-half-details { display:flex; gap:6px; flex-wrap:wrap; }
+  .wdc-half-det { font-size:.62rem; opacity:.75; white-space:nowrap; }
+  .wdc-sep { grid-column:1/-1; height:1px; background:rgba(255,255,255,.15); margin:6px 0; }
+  /* Day별 카드 색상 */
+  .wdc-1 { background:linear-gradient(160deg,#1a6b8a,#0d4a63); }
+  .wdc-2 { background:linear-gradient(160deg,#c85a42,#a03d28); }
+  .wdc-3 { background:linear-gradient(160deg,#3a6b48,#255238); }
+  .wdc-4 { background:linear-gradient(160deg,#7a5a2e,#5a3e18); }
+  @media(max-width:600px){
+    .weather-grid { grid-template-columns:repeat(2,1fr); }
+    .wdc-half-det { font-size:.6rem; }
+    .wdc-temp { font-size:1.3rem; }
+  }
+
   /* MAIN */
   main { max-width:900px; margin:0 auto; padding:40px 20px 80px; }
 
@@ -327,6 +389,20 @@
 </header>
 
 <main>
+
+  <!-- ── 날씨 위젯 ── -->
+  <div class="weather-wrap" id="weatherWrap">
+    <div class="weather-header">
+      <span>🌤️ 오키나와 여행 일정 날씨 예보</span>
+      <span class="weather-updated" id="wUpdated"></span>
+    </div>
+    <div class="weather-grid" id="weatherGrid">
+      <div class="weather-day-card skeleton" id="wd-0"></div>
+      <div class="weather-day-card skeleton" id="wd-1"></div>
+      <div class="weather-day-card skeleton" id="wd-2"></div>
+      <div class="weather-day-card skeleton" id="wd-3"></div>
+    </div>
+  </div>
 
   <!-- MAP -->
   <div class="map-section">
@@ -901,6 +977,116 @@ var ROUTE_DEFS = [
 var map, markers = [], routeLayers = [];
 
 window.addEventListener('load', function() {
+
+  // ── 일정별 날씨 예보 (Open-Meteo, 무료·키 불필요) ──
+  var WMO_TEXT = {
+    0:'맑음',1:'대체로 맑음',2:'구름 조금',3:'흐림',
+    45:'안개',48:'안개',
+    51:'가벼운 이슬비',53:'이슬비',55:'강한 이슬비',
+    61:'약한 비',63:'비',65:'강한 비',
+    71:'약한 눈',73:'눈',75:'강한 눈',
+    80:'소나기',81:'소나기',82:'강한 소나기',
+    95:'뇌우',96:'뇌우(우박)',99:'뇌우(우박)',
+  };
+  var WMO_ICON = {
+    0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+    45:'🌫️',48:'🌫️',
+    51:'🌦️',53:'🌧️',55:'🌧️',
+    61:'🌦️',63:'🌧️',65:'⛈️',
+    71:'🌨️',73:'❄️',75:'❄️',
+    80:'🌦️',81:'🌧️',82:'⛈️',
+    95:'⛈️',96:'⛈️',99:'⛈️',
+  };
+  var DAYS = [
+    { label:'Day 1', date:'5/10 (일)', cls:'wdc-1' },
+    { label:'Day 2', date:'5/11 (월)', cls:'wdc-2' },
+    { label:'Day 3', date:'5/12 (화)', cls:'wdc-3' },
+    { label:'Day 4', date:'5/13 (수)', cls:'wdc-4' },
+  ];
+
+  function fetchTripWeather() {
+    // hourly 데이터로 오전(09시)/오후(14시) 날씨 분리
+    var url = 'https://api.open-meteo.com/v1/forecast' +
+      '?latitude=26.2123&longitude=127.6792' +
+      '&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m' +
+      '&daily=temperature_2m_max,temperature_2m_min' +
+      '&timezone=Asia%2FTokyo' +
+      '&start_date=2026-05-10&end_date=2026-05-13';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.timeout = 8000;
+    xhr.onload = function() {
+      try {
+        var resp = JSON.parse(xhr.responseText);
+        var h = resp.hourly;
+        var daily = resp.daily;
+        var grid = document.getElementById('weatherGrid');
+        grid.innerHTML = '';
+
+        for (var i = 0; i < 4; i++) {
+          // 오전: 09시, 오후: 14시 (각 day는 24시간 단위)
+          var amIdx = i * 24 + 9;
+          var pmIdx = i * 24 + 14;
+
+          function getSlot(idx) {
+            return {
+              temp : Math.round(h.temperature_2m[idx]),
+              code : h.weathercode[idx],
+              icon : WMO_ICON[h.weathercode[idx]] || '🌡️',
+              desc : WMO_TEXT[h.weathercode[idx]] || '-',
+              rain : h.precipitation_probability[idx] || 0,
+              wind : Math.round(h.windspeed_10m[idx]),
+            };
+          }
+          var tMax = Math.round(daily.temperature_2m_max[i]);
+          var tMin = Math.round(daily.temperature_2m_min[i]);
+          var am = getSlot(amIdx);
+          var pm = getSlot(pmIdx);
+          var day = DAYS[i];
+
+          function halfHtml(slot, label) {
+            return '<div class="wdc-half">' +
+              '<div class="wdc-half-label">' + label + '</div>' +
+              '<div class="wdc-half-icon">' + slot.icon + '</div>' +
+              '<div class="wdc-half-temp">' + slot.temp + '°C</div>' +
+              '<div class="wdc-half-desc">' + slot.desc + '</div>' +
+              '<div class="wdc-half-details">' +
+                '<span class="wdc-half-det">☔' + slot.rain + '%</span>' +
+                '<span class="wdc-half-det">💨' + slot.wind + 'km</span>' +
+              '</div>' +
+            '</div>';
+          }
+
+          var card = document.createElement('div');
+          card.className = 'weather-day-card ' + day.cls;
+          card.innerHTML =
+            '<div class="wdc-day">' + day.label + '</div>' +
+            '<div class="wdc-date">' + day.date + '</div>' +
+            '<div class="wdc-minmax">🌡️ 최고 <b>' + tMax + '°</b> · 최저 <b>' + tMin + '°</b></div>' +
+            '<div class="wdc-ampm">' +
+              halfHtml(am, '🌅 오전') +
+              halfHtml(pm, '🌇 오후') +
+            '</div>';
+          grid.appendChild(card);
+        }
+
+        var now = new Date();
+        document.getElementById('wUpdated').textContent =
+          '업데이트 ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+      } catch(e) {
+        document.getElementById('weatherGrid').innerHTML =
+          '<div style="color:var(--text-muted);font-size:.82rem;padding:12px">날씨 정보를 불러올 수 없습니다</div>';
+      }
+    };
+    xhr.onerror = xhr.ontimeout = function() {
+      document.getElementById('weatherGrid').innerHTML =
+        '<div style="color:var(--text-muted);font-size:.82rem;padding:12px">네트워크 연결을 확인해주세요</div>';
+    };
+    xhr.send();
+  }
+  fetchTripWeather();
+
+
   var mapEl = document.getElementById('map');
   mapEl.style.height = (window.innerWidth < 600 ? '300px' : '420px');
   mapEl.style.width = '100%';
